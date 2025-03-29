@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Failed</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Email Sending Failed</h1>
+        <p>We couldn't send the email to {{ email }}. Would you like to try again?</p>
+        <form method="POST" action="{{ url_for('resend_email') }}">
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="hidden" name="output_image_path" value="{{ output_image_path }}">
+            <button type="submit" class="btn hover-btn">Resend Email</button>
+        </form>
+        <a href="{{ url_for('index') }}" class="btn back-btn">Back to Main Menu</a>
+    </div>
+</body>
+</html>

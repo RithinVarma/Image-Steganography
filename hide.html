@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hide Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        // JavaScript to calculate and display capacity after cover image is uploaded
+        function calculateCapacity() {
+            const coverImageInput = document.getElementById('cover_image');
+            const capacityDisplay = document.getElementById('capacity_display');
+
+            if (coverImageInput.files.length > 0) {
+                const file = coverImageInput.files[0];
+                const img = new Image();
+
+                img.onload = function () {
+                    const width = this.width;
+                    const height = this.height;
+                    const capacityBits = width * height * 3; // 3 bits per pixel (RGB)
+                    const capacityBytes = capacityBits / 8; // Convert bits to bytes
+                    const capacityKB = capacityBytes / 1024; // Convert bytes to KB
+                    capacityDisplay.textContent = `Maximum capacity: ${capacityKB.toFixed(2)} KB`;
+                };
+
+                img.src = URL.createObjectURL(file);
+            } else {
+                capacityDisplay.textContent = '';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Hide Data</h1>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <label for="email">Enter the receiver's email:</label>
+            <input type="email" id="email" name="email" placeholder="example@gmail.com" required>
+
+            <label for="data_type">Select the type of data to hide:</label>
+            <select id="data_type" name="data_type" required>
+                <option value="text">Text</option>
+                <option value="image">Image</option>
+                <option value="audio">Audio</option>
+                <option value="video">Video</option>
+            </select>
+
+            <label for="cover_image">Upload the cover image:</label>
+            <input type="file" id="cover_image" name="cover_image" accept="image/*" required onchange="calculateCapacity()">
+            <p id="capacity_display" class="capacity-info"></p> <!-- Display capacity here -->
+
+            <label for="hidden_file">Upload the file to hide:</label>
+            <input type="file" id="hidden_file" name="hidden_file" required>
+
+            <p><button type="submit" class="btn hover-btn next-btn">Hide Data</button></p>
+        </form>
+        <a href="{{ url_for('index') }}" class="btn back-btn">Back to Main Menu</a>
+    </div>
+</body>
+</html>

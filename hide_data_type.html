@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hide Data Type</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Choose Data Type to Hide</h1>
+        <form method="POST" enctype="multipart/form-data" onsubmit="return validateFileSize()">
+            <div class="mcq-group">
+                <label>
+                    <input type="radio" name="data_type" value="text" required> Text
+                </label>
+                <label>
+                    <input type="radio" name="data_type" value="image"> Image
+                </label>
+                <label>
+                    <input type="radio" name="data_type" value="audio"> Audio
+                </label>
+                <label>
+                    <input type="radio" name="data_type" value="video"> Video
+                </label>
+            </div>
+            <label for="cover_image">Cover Image:</label>
+            <p class="size-info">Minimum size of the required cover image : 1 KB</p>
+            <input type="file" id="cover_image" name="cover_image" required onchange="calculateCapacity()">
+            <p id="capacity_info" class="capacity-info">Maximum capacity to store in the cover image : <span id="capacity_value">0 KB</span></p>
+            <label for="hidden_file">File to Hide:</label>
+            <p class="size-info">Minimum size of the file to hide : 1 KB</p>
+            <input type="file" id="hidden_file" name="hidden_file" required>
+            <p><button type="submit" class="btn hover-btn">Hide Data</button></p>
+        </form>
+        <a href="{{ url_for('index') }}" class="btn back-btn">Back to Main Menu</a>
+    </div>
+
+    <script>
+        function calculateCapacity() {
+            const coverImage = document.getElementById('cover_image').files[0];
+            if (coverImage) {
+                const img = new Image();
+                img.src = URL.createObjectURL(coverImage);
+                img.onload = function () {
+                    const width = img.width;
+                    const height = img.height;
+                    const capacity_bits = width * height * 3; // 3 bits per pixel (RGB)
+                    const capacity_kb = (capacity_bits / 8) / 1024; // Convert to KB
+                    document.getElementById('capacity_value').textContent = `${capacity_kb.toFixed(2)} KB`;
+                };
+            }
+        }
+
+        function validateFileSize() {
+            const coverImage = document.getElementById('cover_image').files[0];
+            const hiddenFile = document.getElementById('hidden_file').files[0];
+            const capacityValue = parseFloat(document.getElementById('capacity_value').textContent);
+
+            if (coverImage) {
+                const coverImageSizeKB = coverImage.size / 1024;
+                if (coverImageSizeKB < 1) {  // Use <= if you want to allow exactly 1 KB
+                    alert("Error: The cover image is too small. Minimum size is 1 KB.");
+                    return false;
+                }
+            }
+
+            if (hiddenFile) {
+                const hiddenFileSizeKB = hiddenFile.size / 1024;
+                
+                if (hiddenFileSizeKB > capacityValue) {
+                    alert(`Error: The selected file size (${hiddenFileSizeKB.toFixed(2)} KB) exceeds the maximum capacity (${capacityValue.toFixed(2)} KB).`);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        setTimeout(function() {
+            window.location.href = "{{ url_for('index') }}";
+        }, 3000);
+    </script>
+</head>
+<body>
+    <div class="container">
+        {% if action == 'hide' %}
+            <h1>Thank You!</h1>
+            <p>Data hidden successfully! You will be redirected to the main menu shortly...</p>
+        {% elif action == 'extract' %}
+            <h1>Success!</h1>
+            <p>Data extracted successfully!</p>
+            {% if file_path %}
+                <p>Download your file: <a href="{{ url_for('download', filename=file_name) }}" class="btn hover-btn">Download</a></p>
+            {% endif %}
+        {% else %}
+            <h1>Thank You!</h1>
+            <p>You will be redirected to the main menu shortly...</p>
+        {% endif %}
+    </div>
+</body>
+</html>

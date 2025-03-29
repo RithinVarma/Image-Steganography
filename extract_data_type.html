@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Data Type</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Choose Data Type to Extract</h1>
+        <form method="POST" enctype="multipart/form-data" onsubmit="startProgress()">
+            <label for="data_type">Data Type:</label>
+            <select id="data_type" name="data_type">
+                <option value="text">Text</option>
+                <option value="image">Image</option>
+                <option value="audio">Audio</option>
+                <option value="video">Video</option>
+            </select>
+            <label for="stego_image">Stego Image:</label>
+            <input type="file" id="stego_image" name="stego_image" required>
+            <p><button type="submit" class="btn hover-btn">Extract Data</button></p>
+        </form>
+        <div id="progress-container" style="display: none;">
+            <h2>Processing...</h2>
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+            <p id="progress-text">0%</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn back-btn">Back to Main Menu</a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io();  // Connect to the Socket.IO server
+
+        // Show progress bar and start listening for updates
+        function startProgress() {
+            document.getElementById('progress-container').style.display = 'block';
+            socket.on('progress_update', function(data) {
+                const progress = data.progress;
+                document.getElementById('progress').style.width = `${progress}%`;
+                document.getElementById('progress-text').innerText = `${progress}%`;
+            });
+        }
+    </script>
+</body>
+</html>

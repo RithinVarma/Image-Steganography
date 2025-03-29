@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Processing...</h1>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <p id="progress-text">0%</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io();  // Connect to the Socket.IO server
+
+        // Listen for progress updates from the backend
+        socket.on('progress_update', function(data) {
+            const progress = data.progress;
+            document.getElementById('progress').style.width = `${progress}%`;  // Update progress bar width
+            document.getElementById('progress-text').innerText = `${progress}%`;  // Update progress text
+        });
+    </script>
+</body>
+</html>
